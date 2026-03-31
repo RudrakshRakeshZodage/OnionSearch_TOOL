@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnionScraper | Deep Web Search Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">🧅</span>
+                <h1>ONION<span>SCRAPER</span></h1>
+            </div>
+            <div class="status-indicator">
+                <span id="system-status" class="status-dot"></span>
+                <span id="status-text">SYSTEM READY</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="search-section">
+                <div class="glass-card search-card">
+                    <h2>SECURE SEARCH ENGINE</h2>
+                    <p class="subtitle">Enter keywords to scrape the deep web via multiple .onion engines.</p>
+                    <form id="search-form" class="search-form">
+                        <div class="input-group">
+                            <input type="text" id="query" placeholder="Enter keywords (e.g., 'cryptocurrency', 'wiki')..." required autocomplete="off">
+                            <button type="submit" id="search-btn">
+                                <span class="btn-text">INITIALIZE SCRAPE</span>
+                                <span class="btn-loader"></span>
+                            </button>
+                        </div>
+                        <div class="settings-bar">
+                            <div class="setting">
+                                <label for="limit">PAGE LIMIT:</label>
+                                <input type="number" id="limit" value="1" min="1" max="10">
+                            </div>
+                            <div class="setting">
+                                <label for="proxy">PROXY:</label>
+                                <input type="text" id="proxy" value="127.0.0.1:9150">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="results-layout">
+                <div class="glass-card terminal-card">
+                    <div class="card-header">
+                        <h3>TERMINAL LOGS</h3>
+                        <div class="window-controls">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div id="terminal-logs" class="terminal-view">
+                        <div class="log-line system">> System initialized. Waiting for input...</div>
+                    </div>
+                </div>
+
+                <div class="glass-card results-card" id="results-container" style="display:none;">
+                    <div class="card-header">
+                        <h3>SCRAPED LINKS</h3>
+                        <button id="export-btn" class="mini-btn">EXPORT CSV</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>ENGINE</th>
+                                    <th>TITLE</th>
+                                    <th>ONION URL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Results will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 ONIONSCRAPER UI | SECURE MONITORING ACTIVE</p>
+        </footer>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

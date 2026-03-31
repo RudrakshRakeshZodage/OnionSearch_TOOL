@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataVault | Sample Leak Monitor Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --panel: #141414;
+      --border: #222;
+      --green: #00ff88;
+      --red: #ff4444;
+      --yellow: #ffd700;
+      --text: #ccc;
+      --muted: #555;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    header h1 {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
+    .badge {
+      background: rgba(0,255,136,0.1);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-size: 0.7rem;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .badge.red { background: rgba(255,68,68,0.1); border-color: var(--red); color: var(--red); }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      padding: 1.5rem 2rem;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Roboto Mono', monospace;
+      color: var(--green);
+    }
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .disclaimer {
+      margin: 0 2rem 1.5rem;
+      padding: 1rem 1.5rem;
+      background: rgba(255,215,0,0.07);
+      border: 1px solid var(--yellow);
+      border-radius: 8px;
+      color: var(--yellow);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .section {
+      padding: 0 2rem 2rem;
+    }
+    .section h2 {
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .search-bar {
+      margin-bottom: 1rem;
+    }
+    .search-bar input {
+      width: 100%;
+      max-width: 400px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      color: var(--green);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .search-bar input:focus { border-color: var(--green); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    thead th {
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.8rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody td {
+      padding: 0.9rem 1rem;
+      vertical-align: middle;
+    }
+    .email-cell {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--green);
+      font-size: 0.85rem;
+    }
+    .company-cell { color: #aaa; font-weight: 600; }
+    .source-badge {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(255,68,68,0.12);
+      color: var(--red);
+      border: 1px solid rgba(255,68,68,0.3);
+    }
+    .date-cell { color: var(--muted); font-size: 0.82rem; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+      font-family: 'Roboto Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🧅 DATAVAULT</h1>
+  <span class="badge">ONION DEMO</span>
+  <span class="badge red">SAMPLE DATA ONLY</span>
+</header>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="num">24</div>
+    <div class="label">Sample Records</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">8</div>
+    <div class="label">Companies</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">4</div>
+    <div class="label">Sources</div>
+  </div>
+  <div class="stat-card">
+    <div class="num">DEMO</div>
+    <div class="label">Mode</div>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ <strong>DEMO PAGE</strong> — All data shown below is <strong>entirely fictional and randomly generated</strong> for educational/testing purposes. No real personal information is represented here.
+</div>
+
+<div class="section">
+  <h2>Sample Records — Email & Company Data</h2>
+  <div class="search-bar">
+    <input type="text" id="filterInput" placeholder="Filter by email or company..." oninput="filterTable()">
+  </div>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Email (Fake)</th>
+        <th>Company (Fake)</th>
+        <th>Role</th>
+        <th>Source Tag</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<footer>
+  ONIONSCRAPER DEMO v1.0 — EDUCATIONAL USE ONLY — ALL DATA IS SYNTHETIC
+</footer>
+
+<script>
+  const fakeData = [
+    { email:"alice.morgan@fakecorp.io",    company:"FakeCorp Inc.",       role:"CEO",               source:"breach-A", date:"2024-01-15" },
+    { email:"john.doe@sample-tech.net",    company:"SampleTech Ltd.",     role:"CTO",               source:"breach-B", date:"2024-02-03" },
+    { email:"priya.sharma@demosoft.com",   company:"DemoSoft Pvt. Ltd.",  role:"Engineer",          source:"breach-A", date:"2024-02-18" },
+    { email:"carlos.v@fictional.org",      company:"Fictional Corp.",     role:"Marketing Head",    source:"breach-C", date:"2024-03-05" },
+    { email:"mei.wong@notreal.co",         company:"NotReal Solutions",   role:"HR Manager",        source:"breach-B", date:"2024-03-22" },
+    { email:"raj.patel@testdata.in",       company:"TestData Systems",    role:"DevOps Lead",       source:"breach-D", date:"2024-04-01" },
+    { email:"anna.k@synthtech.eu",         company:"SynthTech GmbH",      role:"Data Analyst",      source:"breach-A", date:"2024-04-14" },
+    { email:"mike.johnson@example.com",    company:"Example Enterprises", role:"Product Manager",   source:"breach-C", date:"2024-04-29" },
+    { email:"fatima.al@demo-hub.ae",       company:"Demo Hub FZCO",       role:"Finance Director",  source:"breach-B", date:"2024-05-10" },
+    { email:"liu.yang@fakemails.cn",       company:"Fakemails Ltd.",      role:"Software Dev",      source:"breach-D", date:"2024-05-25" },
+    { email:"sara.jones@placeholder.uk",   company:"Placeholder PLC",     role:"Legal Counsel",     source:"breach-A", date:"2024-06-08" },
+    { email:"omar.h@testsec.qa",           company:"TestSec Qatar",       role:"Security Analyst",  source:"breach-C", date:"2024-06-21" },
+    { email:"nina.v@synthcorp.de",         company:"SynthCorp AG",        role:"Admin",             source:"breach-B", date:"2024-07-04" },
+    { email:"james.w@dummydata.us",        company:"DummyData Corp.",     role:"VP Sales",          source:"breach-D", date:"2024-07-19" },
+    { email:"amelia.r@sampledist.au",      company:"Sample Dist. Pty.",   role:"Operations",        source:"breach-A", date:"2024-08-02" },
+    { email:"luca.m@fakemail.it",          company:"FakeMail S.r.l.",     role:"Network Engineer",  source:"breach-B", date:"2024-08-17" },
+    { email:"elena.p@notarealco.ru",       company:"NotARealCo LLC",      role:"QA Lead",           source:"breach-C", date:"2024-09-01" },
+    { email:"tom.b@syntheticdata.ca",      company:"SyntheticData Inc.",  role:"Cloud Architect",   source:"breach-D", date:"2024-09-15" },
+    { email:"hana.k@placeholder.jp",       company:"Placeholder KK",      role:"UX Designer",       source:"breach-A", date:"2024-10-03" },
+    { email:"samuel.o@fakecompany.ng",     company:"FakeCompany Ltd.",    role:"Backend Dev",       source:"breach-B", date:"2024-10-18" },
+    { email:"yasmin.f@demosystems.br",     company:"Demo Systems S.A.",   role:"ML Engineer",       source:"breach-C", date:"2024-11-01" },
+    { email:"david.l@testorg.sg",          company:"TestOrg Pte. Ltd.",   role:"COO",               source:"breach-D", date:"2024-11-15" },
+    { email:"nora.e@sampledomain.se",      company:"SampleDomain AB",     role:"Business Dev",      source:"breach-A", date:"2024-12-01" },
+    { email:"ali.k@fictional-inc.com",     company:"Fictional Inc.",      role:"Support Eng.",      source:"breach-B", date:"2024-12-20" },
+  ];
+
+  const tbody = document.getElementById('tableBody');
+
+  function renderTable(data) {
+    tbody.innerHTML = '';
+    data.forEach((row, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:var(--muted);font-size:0.8rem">${i+1}</td>
+        <td class="email-cell">${row.email}</td>
+        <td class="company-cell">${row.company}</td>
+        <td style="color:#888;font-size:0.85rem">${row.role}</td>
+        <td><span class="source-badge">${row.source}</span></td>
+        <td class="date-cell">${row.date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filterTable() {
+    const q = document.getElementById('filterInput').value.toLowerCase();
+    const filtered = fakeData.filter(r =>
+      r.email.toLowerCase().includes(q) || r.company.toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  }
+
+  renderTable(fakeData);
+</script>
+</body>
+</html>

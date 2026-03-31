@@ -1,0 +1,26 @@
+{
+  "name": "onionsearch",
+  "version": "1.0.0",
+  "description": "👋 Hi there! For any professional inquiries or collaborations, please reach out to me at:\r megadose@protonmail.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/megadose/OnionSearch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/megadose/OnionSearch/issues"
+  },
+  "homepage": "https://github.com/megadose/OnionSearch#readme",
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
