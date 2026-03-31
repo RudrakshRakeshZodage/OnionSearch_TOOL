@@ -1,0 +1,22 @@
+# ⚠️ NEVER expose your .onion private keys!
+OnionSearch/hidden_service/hs_ed25519_secret_key
+OnionSearch/hidden_service/hs_ed25519_public_key
+OnionSearch/hidden_service/hostname
+OnionSearch/hidden_service/authorized_clients/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Logs
+logs/
+*.log
+OnionSearch/web_output_*.txt
+OnionSearch/output_*.txt
+
+# PM2
+.pm2/
+
+# OS
+.DS_Store
+Thumbs.db
