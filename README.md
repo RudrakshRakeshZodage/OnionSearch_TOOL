@@ -1,76 +1,43 @@
-# darkdump
+# Darkdump Optimized - AI-Powered Intelligence
 
-## About 
-Darkdump is a OSINT interface for carrying out deep web investgations written in python in which it allows users to enter a search query in which darkdump provides the ability to scrape .onion sites relating to that query to try to extract emails, metadata, keywords, images, social media etc. Darkdump retrieves sites via Ahmia.fi and scrapes those .onion addresses when connected via the tor network. 
+## 🚀 About 
+**Darkdump Optimized** is a high-performance OSINT interface designed for deep web investigations. It transforms raw natural language queries into structured intelligence using **Groq AI** and performs deep, JavaScript-rendered scans of `.onion` sites using **Playwright**.
 
-## Installation
+### Key Enhancements:
+- **Smart Search**: Enter natural language (e.g., *"Find leaks for YouTube"*) and get AI-expanded queries.
+- **Deep Intel Sniper**: Automatically detects **Bitcoin/Ethereum addresses**, **API Keys**, and **Private Keys**.
+- **JS-Rendering**: Full support for JavaScript-heavy onion sites via **Playwright**.
+- **Unified Engine**: Streamlined codebase with zero legacy dependencies (NLTK/TextBlob).
+
+## 🛠 Installation
 1) ``git clone https://github.com/josh0xA/darkdump``<br/>
 2) ``cd darkdump``<br/>
-3) ``python3 -m pip install -r requirements.txt``<br/>
-4) ``python3 darkdump.py --help``<br/>
+3) ``python -m pip install -r requirements.txt``<br/>
+4) ``playwright install chromium``<br/>
+5) ``python darkdump.py --help``<br/>
 
-### Tor Configuration 
-To use Darkdump effectively, you need to configure Tor to allow your script to control it via the Tor control port. Here's how to set up your `torrc` file and verify that Tor is running: <br/>
+## 🔍 Intelligence Modes: 
 
-#### Step 1: Install Tor
-If Tor is not already installed on your system, you need to install it. Here's how you can install Tor on various operating systems:
+### 1. Smart Intelligence Search
+`python darkdump.py -q "corporate data leaks" -a 5 --scrape --js`
+*   **-q**: Query string (Natural language supported via Groq)
+*   **-a**: Number of results
+*   **--scrape**: Perform deep intelligence extraction
+*   **--js**: Force Playwright rendering (Default for .onion)
 
-Debian/Kali/Ubuntu: `sudo apt install tor`<br/>
-MacOS: `brew install tor`<br/>
+### 2. Direct Vector Investigation (New)
+`python darkdump.py -u "http://[target].onion" --scrape`
+*   **-u**: Directly target a specific link for immediate deep-scrape intelligence.
 
-#### Step 2: Configure the Tor torrc File<br/>
-Locate your torrc file. This file is usually found at `/etc/tor/torrc`on Linux and sometimes Mac. 
+## ⚙️ Tor Configuration 
+Ensure your Tor service is running on **port 9150** (Tor Browser) or **9050** (Tor Service). Darkdump handles the proxy routing automatically.
 
-Add the following lines to your torrc to enable the control port and set a control port password:
-```
-ControlPort 9051
-HashedControlPassword [YourHashedPasswordHere]
-```
-Replace `[YourHashedPasswordHere]` with a hashed password which can be generated using the `tor --hash-password` command: `tor --hash-password "my_password"`
+## 🧠 AI Integration
+Darkdump now requires a `GROQ_API_KEY` in a `backend/.env` file for Smart Search and Topic Sentiment capabilities.
 
-#### Step 3: Start Tor Service
-Linux: `sudo systemctl start tor.service`<br/>
-MacOS: `brew services start tor`<br/>
+## ⚖️ Ethical Notice
+This tool is for educational and authorized intelligence gathering only. The developers are not responsible for any misuse.
 
-### Example Queries: 
-`python3 darkdump.py -q "hacking" -a 10 --scrape --proxy` - search for 10 links and scrape each site <br/>
-`python3 darkdump.py -q "free movies" -a 25` - don't scrape, just return 25 links for that query (does not require tor) <br/>
-`python3 darkdump.py -q "marketplaces" -a 15 --scrape --proxy -i` - search for 10 links and scrape each site as well as find and store images.
-
-## Menu
-```
-
-     _            _       _                            __
-  __| | __ _ _ __| | ____| |_   _ _ __ ___  _ __      / /
- / _` |/ _` | '__| |/ / _` | | | | '_ ` _ \| '_ \    / / 
-| (_| | (_| | |  |   < (_| | |_| | | | | | | |_) |  / /  
- \__,_|\__,_|_|  |_|\_\__,_|\__,_|_| |_| |_| .__/  /_/  v3 by Josh Schiavone 
-                                           |_|           
-
-usage: darkdump.py [-h] [-v] [-q QUERY] [-a AMOUNT] [-p] [-i] [-s]
-
-Darkdump is an interface for scraping the deepweb through Ahmia. Made by yours truly.
-
-options:
-  -h, --help            show this help message and exit
-  -v, --version         returns darkdump's version
-  -q QUERY, --query QUERY
-                        the keyword or string you want to search on the deepweb
-  -a AMOUNT, --amount AMOUNT
-                        the amount of results you want to retrieve
-  -p, --proxy           use tor proxy for scraping
-  -i, --images          scrape images and visual content from the site
-  -s, --scrape          scrape the actual site for content and look for keywords
-
-```
-## Visual
-<p align="center">
-  <img src="imgs/darkdump_example.png">
-</p>
-
-## Ethical Notice
-The developer of this program, Josh Schiavone, is not resposible for misuse of this data gathering tool. Do not use darkdump to navigate websites that take part in any activity that is identified as illegal under the laws and regulations of your government. May God bless you all. 
-
-## License 
-MIT License<br/>
-Copyright (c) Josh Schiavone
+## 🤝 License 
+MIT License
+Copyright (c) Josh Schiavone / Optimized by Antigravity AI

@@ -1,0 +1,52 @@
+# DARKDUMP OPTIMIZED - RUN COMMANDS REFERENCE
+
+This file contains the sequence of commands to get the platform running with its full AI and scraping capabilities.
+
+================================================================================
+1. INITIAL SETUP (RUN FROM ROOT: c:\Users\sudha\OneDrive\Desktop\darkDump)
+================================================================================
+# Install all optimized dependencies
+pip install -r requirements.txt
+
+# Install Playwright browser binaries
+playwright install chromium
+
+# IMPORTANT: Ensure your GROQ_API_KEY is in backend/.env
+# Example content: GROQ_API_KEY=gsk_your_key_here
+
+================================================================================
+2. STARTING THE BACKEND API (RUN FROM: ./backend)
+================================================================================
+cd backend
+python main.py
+# API will be available at http://127.0.0.1:8000
+
+================================================================================
+3. STARTING THE BACKGROUND WORKER (RUN FROM: ./backend)
+================================================================================
+# Open a NEW terminal
+cd backend
+celery -A celery_app worker --loglevel=info -P solo
+
+================================================================================
+4. STARTING THE FRONTEND DASHBOARD (RUN FROM: ./frontend)
+================================================================================
+# Open a NEW terminal
+cd frontend
+npm run dev
+# Dashboard will be available at http://localhost:5173
+
+================================================================================
+5. USING THE OPTIMIZED CLI (RUN FROM ROOT: ./darkDump)
+================================================================================
+# Smart Search (AI-Powered)
+python darkdump.py -q "corporate leaks" -a 5 --scrape --js
+
+# Direct Vector Investigation (Onion Scraper)
+python darkdump.py -u "http://example.onion" --scrape --js
+
+================================================================================
+6. VERIFICATION & TESTING (RUN FROM: ./backend)
+================================================================================
+cd backend
+python verify_optimized_scraper.py
