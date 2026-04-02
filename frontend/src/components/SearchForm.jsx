@@ -24,10 +24,17 @@ const SearchForm = ({ onSearch, loading }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!primary) return
+    
+    // Auto-include pending secondary keyword if user forgot to click '+'
+    let finalTags = [...tags]
+    if (secondary && secondary.trim() && !finalTags.includes(secondary.trim())) {
+      finalTags.push(secondary.trim())
+    }
+
     onSearch({
-      mode: smartSearch, // 'ai' | 'manual' | 'direct'
+      mode: smartSearch,
       primary_keyword: primary,
-      secondary_keywords: smartSearch === 'ai' || smartSearch === 'direct' ? [] : tags,
+      secondary_keywords: smartSearch === 'ai' || smartSearch === 'direct' ? [] : finalTags,
       amount: parseInt(amount),
       include_images: includeImages,
       use_groq_nlp: smartSearch === 'ai'

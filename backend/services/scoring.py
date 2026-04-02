@@ -1,50 +1,94 @@
 import re
+import math
 from typing import List, Tuple
 
-def calculate_relevance_score(text: str, title: str, primary_keyword: str, secondary_keywords: List[str]) -> Tuple[float, List[str]]:
+
+def calculate_relevance_score(
+    text: str,
+    title: str,
+    primary_keyword: str,
+    secondary_keywords: List[str]
+) -> Tuple[float, List[str]]:
     """
-    Calculates a ranking score based on user-provided weights:
-    score = (exact_matches * 3) + (partial_matches * 1) + (keyword_frequency * 0.5)
-    
-    - Exact Match: Whole word matches (e.g. 'paypal' in 'paypal site')
-    - Partial Match: Substring matches (e.g. 'pay' in 'paypal')
-    - Frequency: Total occurrences of the keyword in the document.
+    Relevance Sniper v4 — Primary-Gated Scoring Engine.
+
+    Key design principle:
+      Secondary keyword bonuses and the Synergy bonus are ONLY awarded
+      when the primary keyword already has a meaningful match score (>= 10.0).
+      This prevents spam sites that flood with secondary keywords from rising
+      above legitimate primary-keyword matches.
+
+    Score breakdown:
+      Primary title exact match    -> +50  (clean intent signal)
+      Primary body exact match     -> +5 * min(count, 10)  (capped, anti-spam)
+      Primary frequency bonus      -> log(min(freq,15)+1) * 2  (soft, capped)
+
+      [Only if primary_score >= 10.0]:
+        Secondary title match      -> +20 per keyword
+        Secondary body match       -> +5 per keyword (flat, not multiplied)
+        Synergy bonus              -> +60 (both primary AND secondary found)
     """
     score = 0.0
-    matched_keywords = []
-    
-    all_target_keywords = [primary_keyword] + [s for s in secondary_keywords if s]
-    # Clean text to avoid regex issues
-    text_clean = text.lower()
+    matched_keywords: List[str] = []
+
+    text_clean  = text.lower()
     title_clean = title.lower()
-    search_space = f"{title_clean} {text_clean}"
-    
-    for kw in all_target_keywords:
-        kw_lower = kw.lower()
-        if not kw_lower:
-            continue
-            
-        found_in_doc = False
-        
-        # 1. Exact matches (Whole Word) -> Weight: 3
-        # We use \b boundary to ensure it's an exact word match
-        exact_count = len(re.findall(rf'\b{re.escape(kw_lower)}\b', search_space))
-        score += exact_count * 3.0
-        if exact_count > 0:
-            found_in_doc = True
-            
-        # 2. Partial matches (Substring) -> Weight: 1
-        # Only counted if it's NOT an exact match but exists as part of another word
-        if exact_count == 0 and kw_lower in search_space:
-            score += 1.0
-            found_in_doc = True
-            
-        # 3. Keyword Frequency -> Weight: 0.5
-        # Total count of the string appearing in the text
-        freq_count = search_space.count(kw_lower)
-        score += freq_count * 0.5
-        
-        if found_in_doc:
-            matched_keywords.append(kw)
-            
-    return round(score, 2), matched_keywords
+    body_space  = text_clean
+
+    primary_matched   = False
+    secondary_matched = False
+    primary_score     = 0.0
+
+    # ── 1. PRIMARY KEYWORD ────────────────────────────────────────────────────
+    if primary_keyword:
+        pk = primary_keyword.lower().strip()
+
+        # Title exact match
+        if re.search(rf'\b{re.escape(pk)}\b', title_clean):
+            primary_score += 50.0
+            primary_matched = True
+
+        # Body exact-word count, capped at 10 occurrences (anti-spam)
+        body_exact = len(re.findall(rf'\b{re.escape(pk)}\b', body_space))
+        primary_score += min(body_exact, 10) * 5.0
+        if body_exact > 0:
+            primary_matched = True
+
+        # Logarithmic frequency bonus — capped at 15 occurrences
+        freq = min(body_space.count(pk), 15)
+        primary_score += math.log(freq + 1) * 2.0
+
+        score += primary_score
+        if primary_matched:
+            matched_keywords.append(primary_keyword)
+
+    # ── 2. SECONDARY KEYWORDS (Only if primary is meaningful) ────────────────
+    # Gate: if primary_score < 10, the document barely mentions the primary
+    # keyword — secondary and synergy bonuses are NOT awarded.
+    if primary_score >= 10.0:
+        for sk in secondary_keywords:
+            if not sk or not sk.strip():
+                continue
+            sk_lower = sk.lower().strip()
+            sk_found = False
+
+            # Title match
+            if re.search(rf'\b{re.escape(sk_lower)}\b', title_clean):
+                score += 20.0
+                sk_found = True
+
+            # Body match — flat bonus regardless of frequency
+            body_exact_sk = len(re.findall(rf'\b{re.escape(sk_lower)}\b', body_space))
+            if body_exact_sk > 0:
+                score += 5.0
+                sk_found = True
+
+            if sk_found:
+                secondary_matched = True
+                matched_keywords.append(sk)
+
+        # ── 3. SYNERGY BONUS ─────────────────────────────────────────────────
+        if primary_matched and secondary_matched:
+            score += 60.0
+
+    return round(score, 2), list(set(matched_keywords))
