@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D4RK N3T Forums :: Underground Community</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Courier+Prime:wght@400;700&display=swap');
+
+  :root {
+    --bg:        #0a0a0a;
+    --bg2:       #0f0f0f;
+    --bg3:       #141414;
+    --border:    #1e1e1e;
+    --border2:   #2a2a2a;
+    --green:     #00ff41;
+    --green-dim: #00aa2a;
+    --green-glow:#00ff4133;
+    --red:       #ff2222;
+    --yellow:    #ffcc00;
+    --orange:    #ff6600;
+    --blue:      #00aaff;
+    --gray:      #555;
+    --text:      #c8c8c8;
+    --text-dim:  #666;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content:'';
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events:none;
+    z-index:9999;
+  }
+
+  /* TOP BAR */
+  #topbar {
+    background: #000;
+    border-bottom: 1px solid var(--green-dim);
+    padding: 4px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green-dim);
+  }
+  #topbar .warn { color: var(--red); animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(180deg, #000 0%, var(--bg2) 100%);
+    border-bottom: 2px solid var(--border);
+    padding: 16px 20px;
+  }
+  .site-title {
+    font-family: 'VT323', monospace;
+    font-size: 42px;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green), 0 0 40px var(--green-dim);
+    letter-spacing: 4px;
+  }
+  .site-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green-dim);
+    letter-spacing: 3px;
+    margin-top: 2px;
+  }
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .header-stats span { color: var(--green); }
+
+  /* NAV */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-right: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--green);
+    background: var(--green-glow);
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .layout { display: grid; grid-template-columns: 1fr 260px; gap: 16px; }
+
+  /* CATEGORY BLOCK */
+  .category-block {
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    background: var(--bg2);
+  }
+  .cat-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+  }
+  .cat-icon { color: var(--green); font-size: 16px; }
+  .cat-title { color: var(--green); font-weight: bold; letter-spacing: 1px; }
+  .cat-desc { color: var(--text-dim); font-size: 11px; margin-left: auto; }
+
+  /* THREAD ROW */
+  .thread-row {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: 32px 1fr 80px 80px 180px;
+    gap: 10px;
+    align-items: center;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .thread-row:last-child { border-bottom: none; }
+  .thread-row:hover { background: rgba(0,255,65,0.03); }
+
+  .thread-icon { text-align: center; font-size: 18px; }
+
+  .thread-title-wrap {}
+  .thread-title {
+    color: var(--text);
+    font-size: 13px;
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s;
+  }
+  .thread-title:hover { color: var(--green); }
+  .thread-title.hot { color: var(--orange); }
+  .thread-title.critical { color: var(--red); }
+  .thread-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .thread-meta .author { color: var(--green-dim); }
+
+  .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    margin-right: 4px;
+    font-weight: bold;
+  }
+  .badge-new    { background:#00ff4122; color:var(--green); border:1px solid var(--green-dim); }
+  .badge-hot    { background:#ff660022; color:var(--orange); border:1px solid var(--orange); }
+  .badge-crit   { background:#ff222222; color:var(--red); border:1px solid var(--red); animation: blink 2s infinite; }
+  .badge-sale   { background:#ffcc0022; color:var(--yellow); border:1px solid var(--yellow); }
+  .badge-free   { background:#00aaff22; color:var(--blue); border:1px solid var(--blue); }
+
+  .thread-replies, .thread-views {
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .thread-replies strong, .thread-views strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+  }
+
+  .thread-last {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .thread-last .last-user { color: var(--green-dim); display: block; }
+  .thread-last .last-time { color: var(--text-dim); }
+
+  /* POST AREA */
+  .post-box {
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    margin-bottom: 16px;
+  }
+  .post-box-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .post {
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 130px 1fr;
+  }
+  .post:last-child { border-bottom: none; }
+  .post-user {
+    padding: 12px;
+    border-right: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  .post-avatar {
+    width: 48px; height: 48px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .post-username {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .post-rank {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .post-rank.elite { color: var(--orange); }
+  .post-rank.god   { color: var(--red); }
+  .post-stats {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    line-height: 1.8;
+  }
+  .post-body { padding: 12px 14px; }
+  .post-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-content {
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .post-content .highlight-cred  { color: var(--red);    background: rgba(255,34,34,0.1);  padding: 0 2px; }
+  .post-content .highlight-org   { color: var(--yellow); background: rgba(255,204,0,0.1);  padding: 0 2px; }
+  .post-content .highlight-tool  { color: var(--orange); background: rgba(255,102,0,0.1);  padding: 0 2px; }
+  .post-content .highlight-ip    { color: var(--blue);   background: rgba(0,170,255,0.1);  padding: 0 2px; }
+  .post-content code {
+    background: #000;
+    border: 1px solid var(--border2);
+    padding: 6px 10px;
+    display: block;
+    margin: 8px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    overflow-x: auto;
+  }
+
+  /* REPLY FORM */
+  .reply-form {
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    margin-bottom: 16px;
+  }
+  .reply-form-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green-dim);
+  }
+  .reply-form-body { padding: 12px; }
+  .form-row { margin-bottom: 10px; }
+  .form-row label {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%;
+    background: #000;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 7px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-row input:focus, .form-row textarea:focus {
+    border-color: var(--green-dim);
+    box-shadow: 0 0 8px var(--green-glow);
+  }
+  .form-row textarea { height: 100px; resize: vertical; }
+  .btn-post {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+  }
+  .btn-post:hover {
+    background: var(--green-glow);
+    box-shadow: 0 0 12px var(--green-glow);
+  }
+
+  /* SIDEBAR */
+  .sidebar {}
+  .sidebar-block {
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    margin-bottom: 14px;
+  }
+  .sidebar-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 7px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green-dim);
+    letter-spacing: 1px;
+  }
+  .sidebar-body { padding: 10px; }
+  .online-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .online-user {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+  }
+  .online-user .uname { color: var(--green-dim); }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row span { color: var(--green); }
+  .ticker-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  .ticker-item:last-child { border-bottom: none; }
+  .ticker-item .t-label { color: var(--red); font-size: 10px; }
+  .ticker-item .t-title { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 20px;
+  }
+  footer .f-green { color: var(--green-dim); }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: rgba(255,34,34,0.08);
+    border: 1px solid var(--red);
+    border-left: 4px solid var(--red);
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* LIVE INDICATOR */
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,34,34,0.1);
+    border: 1px solid var(--red);
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    border-radius: 2px;
+  }
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1s infinite;
+  }
+
+  /* NEW POST notification */
+  #new-post-notification {
+    display: none;
+    background: rgba(0,255,65,0.08);
+    border: 1px solid var(--green);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from{transform:translateY(-10px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+  /* COLUMN HEADERS */
+  .thread-col-headers {
+    display: grid;
+    grid-template-columns: 32px 1fr 80px 80px 180px;
+    gap: 10px;
+    padding: 6px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.3);
+    letter-spacing: 1px;
+  }
+  .thread-col-headers div:nth-child(3),
+  .thread-col-headers div:nth-child(4) { text-align: center; }
+
+  /* timestamp live */
+  #live-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green-dim);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div>[ D4RK-N3T v2.7.1 ] &nbsp;|&nbsp; <span id="live-time"></span></div>
+  <div class="warn">⚠ USE TOR BROWSER ONLY — OPSEC REQUIRED ⚠</div>
+  <div>VISITORS TODAY: <span style="color:var(--green)">1,847</span> &nbsp;|&nbsp; ONLINE: <span style="color:var(--green)">43</span></div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <div>
+      <div class="site-title">D4RK N3T FORUMS</div>
+      <div class="site-subtitle">:: UNDERGROUND COMMUNITY :: EST. 2019 :: INVITE ONLY ::</div>
+      <div class="header-stats">
+        <div>THREADS: <span>14,203</span></div>
+        <div>POSTS: <span>89,441</span></div>
+        <div>MEMBERS: <span>3,821</span></div>
+        <div>ONLINE: <span>43</span></div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+      <div style="margin-top:8px; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text-dim);">
+        logged in as: <span style="color:var(--green)">gh0st_user</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="active">HOME</a>
+  <a href="#">CREDENTIALS</a>
+  <a href="#">MALWARE</a>
+  <a href="#">DATABASES</a>
+  <a href="#">CARDING</a>
+  <a href="#">EXPLOITS</a>
+  <a href="#">MARKETPLACE</a>
+  <a href="#">TUTORIALS</a>
+  <a href="#" style="margin-left:auto; border-left:1px solid var(--border); border-right:none;">INBOX (3)</a>
+</nav>
+
+<div class="container" style="margin-top:14px;">
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner">
+    ⚠ &nbsp; LAW ENFORCEMENT ACTIVITY DETECTED IN RELATED FORUMS — INCREASE OPSEC — USE BRIDGES
+  </div>
+
+  <div class="layout">
+    <div class="main-content">
+
+      <!-- CATEGORY: CREDENTIALS & LEAKS -->
+      <div class="category-block">
+        <div class="cat-header">
+          <span class="cat-icon">🔑</span>
+          <span class="cat-title">CREDENTIALS & LEAKS</span>
+          <span class="cat-desc">combo lists / fullz / stealer logs</span>
+        </div>
+        <div class="thread-col-headers">
+          <div></div>
+          <div>THREAD</div>
+          <div>REPLIES</div>
+          <div>VIEWS</div>
+          <div>LAST POST</div>
+        </div>
+
+        <div class="thread-row" onclick="openThread('thread1')">
+          <div class="thread-icon">📂</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title critical"><span class="badge badge-crit">CRITICAL</span>[FRESH] 2.4M combo list — Banking sector India/US — verified working</a>
+            <div class="thread-meta">by <span class="author">d4t4_l0rd</span> &nbsp;·&nbsp; Credentials &nbsp;·&nbsp; 2 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>847</strong>replies</div>
+          <div class="thread-views"><strong>12.4K</strong>views</div>
+          <div class="thread-last"><span class="last-user">xX_phantom</span><span class="last-time">3 min ago</span></div>
+        </div>
+
+        <div class="thread-row" onclick="openThread('thread2')">
+          <div class="thread-icon">📂</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title hot"><span class="badge badge-hot">HOT</span>HDFC Bank employee credentials — 340 accounts — fresh stealer logs</a>
+            <div class="thread-meta">by <span class="author">cr3d_k1ng</span> &nbsp;·&nbsp; Credentials &nbsp;·&nbsp; 5 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>312</strong>replies</div>
+          <div class="thread-views"><strong>8.1K</strong>views</div>
+          <div class="thread-last"><span class="last-user">n1ghtcr4wl</span><span class="last-time">17 min ago</span></div>
+        </div>
+
+        <div class="thread-row">
+          <div class="thread-icon">📂</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title"><span class="badge badge-free">FREE</span>Telegram stealer output dump — 50K accounts — random mix</a>
+            <div class="thread-meta">by <span class="author">freeloader99</span> &nbsp;·&nbsp; Credentials &nbsp;·&nbsp; 1 day ago</div>
+          </div>
+          <div class="thread-replies"><strong>203</strong>replies</div>
+          <div class="thread-views"><strong>5.2K</strong>views</div>
+          <div class="thread-last"><span class="last-user">z3r0c00l</span><span class="last-time">1 hr ago</span></div>
+        </div>
+
+        <div class="thread-row">
+          <div class="thread-icon">📂</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title"><span class="badge badge-new">NEW</span>[RU] Сбербанк база данных — 180K записей — имя/email/пароль</a>
+            <div class="thread-meta">by <span class="author">русский_хакер</span> &nbsp;·&nbsp; Credentials &nbsp;·&nbsp; 3 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>91</strong>replies</div>
+          <div class="thread-views"><strong>2.3K</strong>views</div>
+          <div class="thread-last"><span class="last-user">vodka_l33t</span><span class="last-time">44 min ago</span></div>
+        </div>
+      </div>
+
+      <!-- CATEGORY: MALWARE & TOOLS -->
+      <div class="category-block">
+        <div class="cat-header">
+          <span class="cat-icon">☣</span>
+          <span class="cat-title">MALWARE & TOOLS</span>
+          <span class="cat-desc">RATs / stealers / loaders / crypters</span>
+        </div>
+        <div class="thread-col-headers">
+          <div></div>
+          <div>THREAD</div>
+          <div>REPLIES</div>
+          <div>VIEWS</div>
+          <div>LAST POST</div>
+        </div>
+
+        <div class="thread-row" onclick="openThread('thread3')">
+          <div class="thread-icon">⚙</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title hot"><span class="badge badge-sale">SALE</span>[SELLING] FUD crypter v4.2 — bypasses Windows Defender + Kaspersky — $150/month</a>
+            <div class="thread-meta">by <span class="author">cr7pt0_d3v</span> &nbsp;·&nbsp; Malware &nbsp;·&nbsp; 8 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>428</strong>replies</div>
+          <div class="thread-views"><strong>9.7K</strong>views</div>
+          <div class="thread-last"><span class="last-user">mal_buyer</span><span class="last-time">8 min ago</span></div>
+        </div>
+
+        <div class="thread-row">
+          <div class="thread-icon">⚙</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title"><span class="badge badge-new">NEW</span>AsyncRAT config targeting Indian corporate networks — 192.168.1.0/24 range</a>
+            <div class="thread-meta">by <span class="author">r4t_m4st3r</span> &nbsp;·&nbsp; RATs &nbsp;·&nbsp; 12 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>167</strong>replies</div>
+          <div class="thread-views"><strong>4.1K</strong>views</div>
+          <div class="thread-last"><span class="last-user">b0tnet_k1ng</span><span class="last-time">2 hr ago</span></div>
+        </div>
+
+        <div class="thread-row">
+          <div class="thread-icon">⚙</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title"><span class="badge badge-free">FREE</span>RedLine stealer build — compiled — tested on Win10/11 — keylogger included</a>
+            <div class="thread-meta">by <span class="author">st34l3r_bro</span> &nbsp;·&nbsp; Stealers &nbsp;·&nbsp; 2 days ago</div>
+          </div>
+          <div class="thread-replies"><strong>892</strong>replies</div>
+          <div class="thread-views"><strong>21K</strong>views</div>
+          <div class="thread-last"><span class="last-user">anon_h4x</span><span class="last-time">5 hr ago</span></div>
+        </div>
+      </div>
+
+      <!-- CATEGORY: DATABASE LEAKS -->
+      <div class="category-block">
+        <div class="cat-header">
+          <span class="cat-icon">🗄</span>
+          <span class="cat-title">DATABASE LEAKS</span>
+          <span class="cat-desc">SQL dumps / breaches / dox</span>
+        </div>
+        <div class="thread-col-headers">
+          <div></div>
+          <div>THREAD</div>
+          <div>REPLIES</div>
+          <div>VIEWS</div>
+          <div>LAST POST</div>
+        </div>
+
+        <div class="thread-row" onclick="openThread('thread4')">
+          <div class="thread-icon">🗃</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title critical"><span class="badge badge-crit">CRITICAL</span>Reliance Industries internal employee DB — 12K records — name/email/salary/SSN</a>
+            <div class="thread-meta">by <span class="author">db_dump3r</span> &nbsp;·&nbsp; DB Leaks &nbsp;·&nbsp; 6 hours ago</div>
+          </div>
+          <div class="thread-replies"><strong>634</strong>replies</div>
+          <div class="thread-views"><strong>15.8K</strong>views</div>
+          <div class="thread-last"><span class="last-user">l34k_hunt3r</span><span class="last-time">1 min ago</span></div>
+        </div>
+
+        <div class="thread-row">
+          <div class="thread-icon">🗃</div>
+          <div class="thread-title-wrap">
+            <a class="thread-title"><span class="badge badge-sale">SALE</span>Paytm user database — 800K rows — email/phone/UPI/transaction history — $2000</a>
+            <div class="thread-meta">by <span class="author">pay_l34k</span> &nbsp;·&nbsp; DB Leaks &nbsp;·&nbsp; 1 day ago</div>
+          </div>
+          <div class="thread-replies"><strong>289</strong>replies</div>
+          <div class="thread-views"><strong>7.3K</strong>views</div>
+          <div class="thread-last"><span class="last-user">dat4_buy3r</span><span class="last-time">3 hr ago</span></div>
+        </div>
+      </div>
+
+      <!-- ACTIVE THREAD VIEW -->
+      <div id="thread-view" style="display:none;">
+        <div id="thread-title-bar" class="post-box-header" style="border:1px solid var(--border); margin-bottom:0;">
+          <span id="thread-title-text"></span>
+          <button onclick="closeThread()" style="background:transparent;border:1px solid var(--gray);color:var(--text-dim);padding:3px 10px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;">✕ CLOSE</button>
+        </div>
+        <div id="thread-posts" class="post-box" style="margin-top:0; border-top:none;"></div>
+
+        <!-- REPLY FORM -->
+        <div class="reply-form">
+          <div class="reply-form-header">POST REPLY — REMAIN ANONYMOUS — NO LOGS KEPT</div>
+          <div class="reply-form-body">
+            <div class="form-row">
+              <label>USERNAME (leave blank for anon)</label>
+              <input type="text" id="reply-user" placeholder="anon_user_xxxx">
+            </div>
+            <div class="form-row">
+              <label>MESSAGE</label>
+              <textarea id="reply-msg" placeholder="type your message here..."></textarea>
+            </div>
+            <button class="btn-post" onclick="postReply()">[ POST REPLY ]</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW POST NOTIFICATION -->
+      <div id="new-post-notification">✓ POST SUBMITTED — VISIBLE TO ALL MEMBERS</div>
+
+      <!-- POST NEW THREAD -->
+      <div class="reply-form">
+        <div class="reply-form-header">POST NEW THREAD — ALL CATEGORIES</div>
+        <div class="reply-form-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="form-row">
+              <label>YOUR HANDLE</label>
+              <input type="text" id="new-user" placeholder="anon_xxxx">
+            </div>
+            <div class="form-row">
+              <label>CATEGORY</label>
+              <select id="new-cat">
+                <option>CREDENTIALS & LEAKS</option>
+                <option>MALWARE & TOOLS</option>
+                <option>DATABASE LEAKS</option>
+                <option>CARDING</option>
+                <option>EXPLOITS</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>THREAD TITLE</label>
+            <input type="text" id="new-title" placeholder="e.g. [FRESH] 10K combo list — verified working">
+          </div>
+          <div class="form-row">
+            <label>CONTENT (paste credentials, details, links, etc.)</label>
+            <textarea id="new-content" style="height:120px;" placeholder="paste your content here...&#10;&#10;Example:&#10;admin@company.com:Password123&#10;user@hdfc.com:Secure@456&#10;john.doe@reliance.com:Corp2024!"></textarea>
+          </div>
+          <button class="btn-post" onclick="postThread()">[ POST THREAD ]</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="sidebar-block">
+        <div class="sidebar-header">⬤ USERS ONLINE NOW</div>
+        <div class="sidebar-body">
+          <div class="online-user"><span class="online-dot"></span><span class="uname">d4t4_l0rd</span></div>
+          <div class="online-user"><span class="online-dot"></span><span class="uname">cr7pt0_d3v</span></div>
+          <div class="online-user"><span class="online-dot"></span><span class="uname">xX_phantom</span></div>
+          <div class="online-user"><span class="online-dot"></span><span class="uname">r4t_m4st3r</span></div>
+          <div class="online-user"><span class="online-dot"></span><span class="uname">русский_хакер</span></div>
+          <div class="online-user"><span class="online-dot"></span><span class="uname">db_dump3r</span></div>
+          <div class="online-user" style="color:var(--text-dim); font-size:10px; padding-top:6px;">+37 anonymous users</div>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-header">📊 FORUM STATS</div>
+        <div class="sidebar-body">
+          <div class="stat-row">Total Posts <span>89,441</span></div>
+          <div class="stat-row">Total Members <span>3,821</span></div>
+          <div class="stat-row">Creds Shared <span>48.2M</span></div>
+          <div class="stat-row">DBs Leaked <span>1,204</span></div>
+          <div class="stat-row">Active Today <span>847</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-header">🔴 LATEST THREATS</div>
+        <div class="sidebar-body">
+          <div class="ticker-item">
+            <div class="t-label">CRITICAL</div>
+            <div class="t-title">Banking combo list 2.4M</div>
+          </div>
+          <div class="ticker-item">
+            <div class="t-label">HIGH</div>
+            <div class="t-title">Reliance DB 12K emp records</div>
+          </div>
+          <div class="ticker-item">
+            <div class="t-label">HIGH</div>
+            <div class="t-title">FUD crypter v4.2 live</div>
+          </div>
+          <div class="ticker-item">
+            <div class="t-label">MEDIUM</div>
+            <div class="t-title">AsyncRAT corporate config</div>
+          </div>
+          <div class="ticker-item">
+            <div class="t-label">MEDIUM</div>
+            <div class="t-title">Paytm 800K user DB sale</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-header">💰 ACCEPTED PAYMENTS</div>
+        <div class="sidebar-body" style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text-dim); line-height:2;">
+          <div>₿ Bitcoin (BTC)</div>
+          <div>⬡ Monero (XMR) preferred</div>
+          <div>◈ Ethereum (ETH)</div>
+          <div style="margin-top:6px; color:var(--red); font-size:10px;">NO PAYPAL / NO FIAT</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <span class="f-green">D4RK-N3T FORUMS</span> &nbsp;|&nbsp; NO LOGS &nbsp;|&nbsp; NO KYC &nbsp;|&nbsp; TOR ONLY &nbsp;|&nbsp; PGP VERIFIED &nbsp;|&nbsp;
+    <span class="f-green">d4rkn3txyz789abc.onion</span>
+  </div>
+</footer>
+
+<script>
+// Live clock
+function updateTime() {
+  const now = new Date();
+  document.getElementById('live-time').textContent =
+    'UTC ' + now.toUTCString().split(' ')[4] + ' | ' +
+    now.toISOString().split('T')[0];
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// Thread data
+const threads = {
+  thread1: {
+    title: '[FRESH] 2.4M combo list — Banking sector India/US — verified working',
+    posts: [
+      {
+        user: 'd4t4_l0rd', rank: 'ELITE MEMBER', rankClass: 'elite',
+        avatar: '👤', posts: '4,821', rep: '+2341', joined: '2020',
+        date: '2 hours ago',
+        content: `dropping fresh combo list from recent stealer campaign
+targeting banking sector across India and US.
+
+SAMPLE (verified working as of today):
+<code>admin@hdfcbank.com:HDFCSecure@2024
+john.smith@bankofamerica.com:BoA#2024!
+priya.sharma@icicibank.com:ICICI_Pass123
+rajesh.kumar@sbi.co.in:SBI@secure456
+manager@axisbank.com:Axis2024#admin</code>
+
+full list: <span class="highlight-cred">2,412,847 lines</span>
+format: email:password
+tested with <span class="highlight-tool">OpenBullet2</span> config
+valid rate: ~12% (fresh as of 6hrs ago)
+
+price: <span class="highlight-org">$450</span> for full list
+contact via jabber or reply here
+BTC/XMR only`
+      },
+      {
+        user: 'xX_phantom', rank: 'SENIOR MEMBER', rankClass: '',
+        avatar: '🕶', posts: '1,203', rep: '+891', joined: '2021',
+        date: '1 hour ago',
+        content: `vouch for d4t4_l0rd — bought from him last month
+<span class="highlight-org">HDFC</span> and <span class="highlight-org">ICICI</span> creds were fresh
+hit rate was around 9-11% which is good for banking
+
+anyone tested the <span class="highlight-org">Bank of America</span> ones yet?
+reply with results`
+      },
+      {
+        user: 'n1ghtcr4wl3r', rank: 'MEMBER', rankClass: '',
+        avatar: '🌙', posts: '342', rep: '+102', joined: '2022',
+        date: '45 min ago',
+        content: `tested 500 lines from sample
+<span class="highlight-cred">47 valid hits</span> on <span class="highlight-org">HDFC</span> portal
+some accounts have 2FA but OTP bypass config available
+IP: <span class="highlight-ip">185.220.101.47</span> working fine as proxy
+
+interested in bulk purchase — dm me`
+      }
+    ]
+  },
+  thread2: {
+    title: 'HDFC Bank employee credentials — 340 accounts — fresh stealer logs',
+    posts: [
+      {
+        user: 'cr3d_k1ng', rank: 'GOD MEMBER', rankClass: 'god',
+        avatar: '👑', posts: '12,441', rep: '+8821', joined: '2019',
+        date: '5 hours ago',
+        content: `exclusive drop — <span class="highlight-org">HDFC Bank</span> internal employee accounts
+obtained via RedLine stealer campaign targeting corporate VPN
+
+records include:
+- employee email + corporate password
+- VPN credentials  
+- internal system access
+
+SAMPLE:
+<code>emp001@hdfcbank.com:Corp@HDFC2024
+branch.mgr.mumbai@hdfcbank.com:BranchMgr#456
+it.admin@hdfcbank.com:ITAdmin@secure789
+hr.manager@hdfcbank.com:HRpass2024!</code>
+
+total: <span class="highlight-cred">340 verified accounts</span>
+includes <span class="highlight-cred">12 admin level</span> accounts
+price: <span class="highlight-org">$800</span> for full set — no split
+escrow accepted`
+      }
+    ]
+  },
+  thread3: {
+    title: '[SELLING] FUD crypter v4.2 — bypasses Windows Defender + Kaspersky',
+    posts: [
+      {
+        user: 'cr7pt0_d3v', rank: 'ELITE MEMBER', rankClass: 'elite',
+        avatar: '⚗', posts: '3,102', rep: '+1944', joined: '2020',
+        date: '8 hours ago',
+        content: `presenting FUD crypter v4.2 — my own dev
+
+FEATURES:
+- Fully Undetectable on <span class="highlight-tool">Windows Defender</span>, <span class="highlight-tool">Kaspersky</span>, <span class="highlight-tool">Bitdefender</span>
+- Supports: EXE, DLL, PS1, BAT payloads
+- Anti-VM, Anti-sandbox, Anti-debug
+- Polymorphic engine — regenerates signature each run
+- works with <span class="highlight-tool">AsyncRAT</span>, <span class="highlight-tool">Quasar</span>, <span class="highlight-tool">NjRAT</span>
+
+PRICING:
+<code>1 month:  $150
+3 months: $350
+lifetime: $800</code>
+
+scan proof: all 0/72 on private scanner
+escrow via trusted middlemen only
+BTC/XMR accepted`
+      }
+    ]
+  },
+  thread4: {
+    title: 'Reliance Industries internal employee DB — 12K records',
+    posts: [
+      {
+        user: 'db_dump3r', rank: 'SENIOR MEMBER', rankClass: '',
+        avatar: '🗄', posts: '2,011', rep: '+1203', joined: '2021',
+        date: '6 hours ago',
+        content: `<span class="highlight-org">Reliance Industries</span> internal HR database
+exfiltrated via SQL injection on employee portal
+
+SCHEMA:
+<code>employee_id | name | email | department | salary | ssn | dob | phone</code>
+
+SAMPLE RECORDS:
+<code>1042 | Amit Sharma | amit.sharma@ril.com | IT | 85000 | XXX-XX-4821
+1043 | Priya Patel | priya.patel@ril.com | Finance | 92000 | XXX-XX-3391
+1044 | Rahul Gupta | rahul.gupta@ril.com | HR | 78000 | XXX-XX-7821</code>
+
+TOTAL: <span class="highlight-cred">12,441 employee records</span>
+departments: IT, Finance, HR, Operations, Legal
+includes C-level executive data
+
+price: <span class="highlight-org">$3,500</span> — serious buyers only
+will provide 100 row sample for verification`
+      }
+    ]
+  }
+};
+
+let currentThread = null;
+
+function openThread(id) {
+  currentThread = id;
+  const t = threads[id];
+  document.getElementById('thread-title-text').textContent = t.title;
+
+  let html = '';
+  t.posts.forEach(p => {
+    html += `
+    <div class="post">
+      <div class="post-user">
+        <div class="post-avatar">${p.avatar}</div>
+        <div class="post-username">${p.user}</div>
+        <div class="post-rank ${p.rankClass}">${p.rank}</div>
+        <div class="post-stats">
+          Posts: ${p.posts}<br>
+          Rep: ${p.rep}<br>
+          Since: ${p.joined}
+        </div>
+      </div>
+      <div class="post-body">
+        <div class="post-date">Posted: ${p.date}</div>
+        <div class="post-content">${p.content}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('thread-posts').innerHTML = html;
+  document.getElementById('thread-view').style.display = 'block';
+  document.getElementById('thread-view').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeThread() {
+  document.getElementById('thread-view').style.display = 'none';
+  currentThread = null;
+}
+
+function postReply() {
+  const user = document.getElementById('reply-user').value || 'anon_' + Math.random().toString(36).substr(2,6);
+  const msg  = document.getElementById('reply-msg').value;
+  if (!msg.trim()) return;
+
+  if (currentThread && threads[currentThread]) {
+    threads[currentThread].posts.push({
+      user: user, rank: 'NEW MEMBER', rankClass: '',
+      avatar: '👤', posts: '1', rep: '0', joined: new Date().getFullYear().toString(),
+      date: 'just now',
+      content: msg
+    });
+    openThread(currentThread);
+  }
+  document.getElementById('reply-msg').value = '';
+  showNotification();
+}
+
+function postThread() {
+  const user    = document.getElementById('new-user').value || 'anon_' + Math.random().toString(36).substr(2,6);
+  const title   = document.getElementById('new-title').value;
+  const content = document.getElementById('new-content').value;
+  const cat     = document.getElementById('new-cat').value;
+  if (!title.trim() || !content.trim()) return;
+
+  const id = 'thread_' + Date.now();
+  threads[id] = {
+    title: title,
+    posts: [{
+      user: user, rank: 'NEW MEMBER', rankClass: '',
+      avatar: '👤', posts: '1', rep: '0', joined: new Date().getFullYear().toString(),
+      date: 'just now',
+      content: content
+    }]
+  };
+
+  // add to DOM
+  const block = document.querySelector('.category-block');
+  const row = document.createElement('div');
+  row.className = 'thread-row';
+  row.setAttribute('onclick', `openThread('${id}')`);
+  row.innerHTML = `
+    <div class="thread-icon">📂</div>
+    <div class="thread-title-wrap">
+      <a class="thread-title"><span class="badge badge-new">NEW</span>${title}</a>
+      <div class="thread-meta">by <span class="author">${user}</span> · ${cat} · just now</div>
+    </div>
+    <div class="thread-replies"><strong>0</strong>replies</div>
+    <div class="thread-views"><strong>1</strong>views</div>
+    <div class="thread-last"><span class="last-user">${user}</span><span class="last-time">just now</span></div>`;
+  block.appendChild(row);
+
+  document.getElementById('new-title').value   = '';
+  document.getElementById('new-content').value = '';
+  document.getElementById('new-user').value    = '';
+  showNotification();
+}
+
+function showNotification() {
+  const n = document.getElementById('new-post-notification');
+  n.style.display = 'block';
+  setTimeout(() => { n.style.display = 'none'; }, 3000);
+}
+</script>
+</body>
+</html>
